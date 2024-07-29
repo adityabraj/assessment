@@ -13,9 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Docker build
         run: |
-          - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 010928211868.dkr.ecr.ap-south-1.amazonaws.com 
+          #- aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 010928211868.dkr.ecr.ap-south-1.amazonaws.com 
           - docker build -t 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest .
           - docker push 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest
       - name: Deploy
