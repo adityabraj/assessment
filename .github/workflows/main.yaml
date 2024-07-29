@@ -12,20 +12,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      #- name: Login to Amazon ECR
-      # id: login-ecr
-      #  uses: aws-actions/amazon-ecr-login@v1
-
+      - name: ECR login
+        run: docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) 010928211868.dkr.ecr.ap-south-1.amazonaws.com
       - name: Docker build
-        run: |
-          #- aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 010928211868.dkr.ecr.ap-south-1.amazonaws.com 
-          - docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) 010928211868.dkr.ecr.ap-south-1.amazonaws.com
-          - docker build -t 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest .
-          - docker push 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest
+        run: docker build -t 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest .
+      - name: Docker push
+        run: docker push 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest
 
   deploy:
     runs-on: self-hosted
+    needs: build
     steps:
       - name: Deploy
         run: docker run -d 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest nodejs
