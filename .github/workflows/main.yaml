@@ -1,0 +1,22 @@
+name: 'Docker Build and Deploy'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker build
+        run: |
+          - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 010928211868.dkr.ecr.ap-south-1.amazonaws.com 
+          - docker build -t 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest .
+          - docker push 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest
+      - name: Deploy
+        run: docker run -d 010928211868.dkr.ecr.ap-south-1.amazonaws.com/simple-nodejs:latest nodejs
