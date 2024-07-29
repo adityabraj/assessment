@@ -1,9 +1,19 @@
-FROM node
+FROM node:18
+
+# Set the working directory in the container
 WORKDIR /app
 
-COPY . .
-EXPOSE 3000
-
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-ENTRYPOINT start npm
+# Install npm dependencies
+RUN npm install
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Expose the port on which the Node.js application will run
+EXPOSE 8081
+
+# Command to start the Node.js application
+CMD ["node", "index.js"]

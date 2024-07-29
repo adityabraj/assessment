@@ -1,53 +1,13 @@
-const express = require('express');
-const app = express();
-const request = require('request');
-const wikip = require('wiki-infobox-parser');
+//Load express module with `require` directive
+var express = require('express')
+var app = express()
 
-//ejs
-app.set("view engine", 'ejs');
+//Define request response in root URL (/)
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+})
 
-//routes
-app.get('/', (req,res) =>{
-    res.render('index');
-});
-
-app.get('/index', (req,response) =>{
-    let url = "https://en.wikipedia.org/w/api.php"
-    let params = {
-        action: "opensearch",
-        search: req.query.person,
-        limit: "1",
-        namespace: "0",
-        format: "json"
-    }
-
-    url = url + "?"
-    Object.keys(params).forEach( (key) => {
-        url += '&' + key + '=' + params[key]; 
-    });
-
-    //get wikip search string
-    request(url,(err,res, body) =>{
-        if(err) {
-            response.redirect('404');
-        }
-            result = JSON.parse(body);
-            x = result[3][0];
-            x = x.substring(30, x.length); 
-            //get wikip json
-            wikip(x , (err, final) => {
-                if (err){
-                    response.redirect('404');
-                }
-                else{
-                    const answers = final;
-                    response.send(answers);
-                }
-            });
-    });
-
-    
-});
-
-//port
-app.listen(3000, console.log("Listening at port 3000..."))
+//Launch listening server on port 8081
+app.listen(8081, function () {
+  console.log('app listening on port 8081!')
+})
